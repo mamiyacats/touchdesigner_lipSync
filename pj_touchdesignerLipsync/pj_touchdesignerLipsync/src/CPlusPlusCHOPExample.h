@@ -13,10 +13,9 @@
 */
 
 #include "CHOP_CPlusPlusBase.h"
-
+/*
 using namespace TD;
 
-/*
 
 This example file implements a class that does 2 different things depending on
 if a CHOP is connected to the CPlusPlus CHOPs input or not.
@@ -31,6 +30,7 @@ of the input will get used.
 If no input is connected then the node will output a smooth sine wave at 120hz.
 */
 
+/*
 
 // To get more help about these functions, look at CHOP_CPlusPlusBase.h
 class CPlusPlusCHOPExample : public CHOP_CPlusPlusBase
@@ -70,7 +70,7 @@ private:
 	const OP_NodeInfo*	myNodeInfo;
 
 	// In this example this value will be incremented each time the execute()
-	// function is called, then passes back to the CHOP 
+	// function is called, then passes back to the CHOP
 	int32_t				myExecuteCount;
 
 
@@ -78,3 +78,4 @@ private:
 
 
 };
+*/

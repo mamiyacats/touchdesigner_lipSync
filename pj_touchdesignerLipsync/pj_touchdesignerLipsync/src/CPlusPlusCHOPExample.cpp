@@ -11,7 +11,7 @@
 * to endorse or promote products derived from this file without specific
 * prior written permission from Derivative.
 */
-
+/*
 #include "CPlusPlusCHOPExample.h"
 
 #include <stdio.h>
@@ -33,13 +33,13 @@ FillCHOPPluginInfo(CHOP_PluginInfo *info)
 	// Always set this to CHOPCPlusPlusAPIVersion.
 	info->apiVersion = CHOPCPlusPlusAPIVersion;
 
-	// The opType is the unique name for this CHOP. It must start with a 
+	// The opType is the unique name for this CHOP. It must start with a
 	// capital A-Z character, and all the following characters must lower case
 	// or numbers (a-z, 0-9)
-	info->customOPInfo.opType->setString("Lipsync");
+	info->customOPInfo.opType->setString("Example");
 
 	// The opLabel is the text that will show up in the OP Create Dialog
-	info->customOPInfo.opLabel->setString("LipSync");
+	info->customOPInfo.opLabel->setString("Example");
 
 	// Information about the author of this OP
 	info->customOPInfo.authorName->setString("Author Name");
@@ -136,7 +136,7 @@ CPlusPlusCHOPExample::execute(CHOP_Output* output,
 							  void* reserved)
 {
 	myExecuteCount++;
-	
+
 	double	 scale = inputs->getParDouble("Scale");
 
 	// In this case we'll just take the first input and re-output it scaled.
@@ -144,7 +144,7 @@ CPlusPlusCHOPExample::execute(CHOP_Output* output,
 	if (inputs->getNumInputs() > 0)
 	{
 		// We know the first CHOP has the same number of channels
-		// because we returned false from getOutputInfo. 
+		// because we returned false from getOutputInfo.
 
 		inputs->enablePar("Speed", 0);	// not used
 		inputs->enablePar("Reset", 0);	// not used
@@ -205,7 +205,7 @@ CPlusPlusCHOPExample::execute(CHOP_Output* output,
 					v = fabs(fmod(offset, 1.0)) > 0.5;
 					break;
 
-				case 2:		// ramp	
+				case 2:		// ramp
 					v = fabs(fmod(offset, 1.0));
 					break;
 			}
@@ -220,7 +220,7 @@ CPlusPlusCHOPExample::execute(CHOP_Output* output,
 			}
 		}
 
-		myOffset += step * output->numSamples; 
+		myOffset += step * output->numSamples;
 	}
 }
 
@@ -253,7 +253,7 @@ CPlusPlusCHOPExample::getInfoCHOPChan(int32_t index,
 	}
 }
 
-bool		
+bool
 CPlusPlusCHOPExample::getInfoDATSize(OP_InfoDATSize* infoSize, void* reserved1)
 {
 	infoSize->rows = 2;
@@ -267,7 +267,7 @@ CPlusPlusCHOPExample::getInfoDATSize(OP_InfoDATSize* infoSize, void* reserved1)
 void
 CPlusPlusCHOPExample::getInfoDATEntries(int32_t index,
 										int32_t nEntries,
-										OP_InfoDATEntries* entries, 
+										OP_InfoDATEntries* entries,
 										void* reserved1)
 {
 	char tempBuffer[4096];
@@ -313,7 +313,7 @@ CPlusPlusCHOPExample::setupParameters(OP_ParameterManager* manager, void *reserv
 		np.defaultValues[0] = 1.0;
 		np.minSliders[0] = -10.0;
 		np.maxSliders[0] =  10.0;
-		
+
 		OP_ParAppendResult res = manager->appendFloat(np);
 		assert(res == OP_ParAppendResult::Success);
 	}
@@ -327,7 +327,7 @@ CPlusPlusCHOPExample::setupParameters(OP_ParameterManager* manager, void *reserv
 		np.defaultValues[0] = 1.0;
 		np.minSliders[0] = -10.0;
 		np.maxSliders[0] =  10.0;
-		
+
 		OP_ParAppendResult res = manager->appendFloat(np);
 		assert(res == OP_ParAppendResult::Success);
 	}
@@ -354,14 +354,14 @@ CPlusPlusCHOPExample::setupParameters(OP_ParameterManager* manager, void *reserv
 
 		np.name = "Reset";
 		np.label = "Reset";
-		
+
 		OP_ParAppendResult res = manager->appendPulse(np);
 		assert(res == OP_ParAppendResult::Success);
 	}
 
 }
 
-void 
+void
 CPlusPlusCHOPExample::pulsePressed(const char* name, void* reserved1)
 {
 	if (!strcmp(name, "Reset"))
@@ -370,3 +370,4 @@ CPlusPlusCHOPExample::pulsePressed(const char* name, void* reserved1)
 	}
 }
 
+*/
