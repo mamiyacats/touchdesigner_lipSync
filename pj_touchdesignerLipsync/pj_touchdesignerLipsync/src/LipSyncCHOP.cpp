@@ -5,8 +5,8 @@
  　- Derivative inc.の商標を使用しない.
  　- このファイルから派生した製品の推奨や宣伝に使用しない.
 */
-/*
-#include "CPlusPlusCHOPExampleJp.h"
+
+#include "LipSyncCHOP.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -23,49 +23,50 @@ extern "C" {
 
       //OP名の設定
       //最初が大文字かつそれ以降は小文字でなければならない.
-      info->customOPInfo.opType->setString("Examplejp");
+      info->customOPInfo.opType->setString("Lipsync");
 
       //OPDialog上でのOP名
-      info->customOPInfo.opLabel->setString("ExampleJP");
+      info->customOPInfo.opLabel->setString("LipSync");
 
       //Author情報
-      info->customOPInfo.authorName->setString("Author Name");
-      info->customOPInfo.authorEmail->setString("email@email.com");
+      info->customOPInfo.authorName->setString("mamiya");
+      info->customOPInfo.authorEmail->setString("mamiyacats99@email.com");
 
       //動作する最低インプット数
-      info->customOPInfo.minInputs = 0;
+      info->customOPInfo.minInputs = 1;
 
       //動作する最高インプット数
-      info->customOPInfo.maxInputs = 1;
+      info->customOPInfo.maxInputs = 5;
   }
 
   //Touch上で新規OP作成をした際に呼び出される.
   DLLEXPORT
   CHOP_CPlusPlusBase* CreateCHOPInstance(const OP_NodeInfo* info)
   {
-      return new CPlusPlusCHOPExampleJp(info);
+      return new LipSyncCHOP(info);
   }
 
   //作成したOPを削除した時、Touchをシャットダウンした時、CHOPが別のdllをロードした時に呼び出される.
   DLLEXPORT
   void DestroyCHOPInstance(CHOP_CPlusPlusBase* instance)
   {
-    delete (CPlusPlusCHOPExampleJp*)instance;
+    delete (LipSyncCHOP*)instance;
   }
 };
 
 
-CPlusPlusCHOPExampleJp::CPlusPlusCHOPExampleJp(const OP_NodeInfo* info) : myNodeInfo(info)
+LipSyncCHOP::LipSyncCHOP(const OP_NodeInfo* info) : myNodeInfo(info)
 {
     myExecuteCount = 0;
     myOffset = 0.0;
 }
 
-CPlusPlusCHOPExampleJp::~CPlusPlusCHOPExampleJp()
+LipSyncCHOP::~LipSyncCHOP()
 {
 }
 
-void CPlusPlusCHOPExampleJp::getGeneralInfo(CHOP_GeneralInfo* ginfo, const OP_Inputs* inputs, void* reserved1)
+//初期設定
+void LipSyncCHOP::getGeneralInfo(CHOP_GeneralInfo* ginfo, const OP_Inputs* inputs, void* reserved1)
 {
     //変更があったら毎フレーム処理
     ginfo->cookEveryFrameIfAsked = true;
@@ -75,32 +76,38 @@ void CPlusPlusCHOPExampleJp::getGeneralInfo(CHOP_GeneralInfo* ginfo, const OP_In
     ginfo->inputMatchIndex = 0;
 }
 
-bool CPlusPlusCHOPExampleJp::getOutputInfo(CHOP_OutputInfo* info, const OP_Inputs* inputs, void* reserved1)
+//出力するチャンネル数・サンプルレートを指定出来る。
+bool LipSyncCHOP::getOutputInfo(CHOP_OutputInfo* info, const OP_Inputs* inputs, void* reserved1)
 {
     //入力チャンネル数によって処理を変化.
     if (inputs->getNumInputs() > 0)
     {
-        return false;
+        info->numChannels = 3;
+        return true;
     }
     else
     {
-        info->numChannels = 1;
+        info->numChannels = 3;
         info->sampleRate = 120;
         return true;
     }
 }
 
-void CPlusPlusCHOPExampleJp::getChannelName(int32_t index, OP_String* name, const OP_Inputs* inputs, void* reserved1)
+void LipSyncCHOP::getChannelName(int32_t index, OP_String* name, const OP_Inputs* inputs, void* reserved1)
 {
     name->setString("chan1");
 }
 
 //基本処理.
-void CPlusPlusCHOPExampleJp::execute(CHOP_Output* output, const OP_Inputs* inputs, void* reserved)
+void LipSyncCHOP::execute(CHOP_Output* output, const OP_Inputs* inputs, void* reserved)
 {
     myExecuteCount++;
 
     double scale = inputs->getParDouble("Scale");
+
+
+
+
 
     if (inputs->getNumInputs() > 0) //入力があれば：それをスケールする.
     {
@@ -109,17 +116,18 @@ void CPlusPlusCHOPExampleJp::execute(CHOP_Output* output, const OP_Inputs* input
         inputs->enablePar("Shape", 0); // not used
 
         int ind = 0;
-        const OP_CHOPInput* cinput = inputs->getInputCHOP(0);
+        const OP_CHOPInput* cinput0 = inputs->getInputCHOP(0);
+        const OP_CHOPInput* cinput1 = inputs->getInputCHOP(1);
 
         for (int i = 0; i < output->numChannels; i++)
         {
             for (int j = 0; j < output->numSamples; j++)
             {
-                output->channels[i][j] = float(cinput->getChannelData(i)[ind] * scale);
+                output->channels[i][j] = float(cinput0->getChannelData(i)[ind] * scale *(i+1));
                 ind++;
 
                 // CHOPの入力の最後を読み切らない.
-                ind = ind % cinput->numSamples;
+                ind = ind % cinput0->numSamples;
             }
         }
     }
@@ -171,14 +179,14 @@ void CPlusPlusCHOPExampleJp::execute(CHOP_Output* output, const OP_Inputs* input
     }
 }
 
-int32_t CPlusPlusCHOPExampleJp::getNumInfoCHOPChans(void* reserved1)
+int32_t LipSyncCHOP::getNumInfoCHOPChans(void* reserved1)
 {
     //任意のInfoCHOPに出力したいチャンネル数を返す.
-    return 2;
+    return 5;
 }
 
 //返したい各チャンネルに対して1回呼び出される（この例では一回のみ）.
-void CPlusPlusCHOPExampleJp::getInfoCHOPChan(int32_t index, OP_InfoCHOPChan* chan, void* reserved1)
+void LipSyncCHOP::getInfoCHOPChan(int32_t index, OP_InfoCHOPChan* chan, void* reserved1)
 {
     if (index == 0)
     {
@@ -193,7 +201,7 @@ void CPlusPlusCHOPExampleJp::getInfoCHOPChan(int32_t index, OP_InfoCHOPChan* cha
     }
 }
 
-bool CPlusPlusCHOPExampleJp::getInfoDATSize(OP_InfoDATSize* infoSize, void* reserved1)
+bool LipSyncCHOP::getInfoDATSize(OP_InfoDATSize* infoSize, void* reserved1)
 {
     infoSize->rows = 2;
     infoSize->cols = 2;
@@ -204,7 +212,7 @@ bool CPlusPlusCHOPExampleJp::getInfoDATSize(OP_InfoDATSize* infoSize, void* rese
     return true;
 }
 
-void CPlusPlusCHOPExampleJp::getInfoDATEntries(int32_t index, int32_t nEntries, OP_InfoDATEntries* entries, void* reserved1)
+void LipSyncCHOP::getInfoDATEntries(int32_t index, int32_t nEntries, OP_InfoDATEntries* entries, void* reserved1)
 {
     char tempBuffer[4096];
 
@@ -237,7 +245,7 @@ void CPlusPlusCHOPExampleJp::getInfoDATEntries(int32_t index, int32_t nEntries, 
     }
 }
 
-void CPlusPlusCHOPExampleJp::setupParameters(OP_ParameterManager* manager, void* reserved1)
+void LipSyncCHOP::setupParameters(OP_ParameterManager* manager, void* reserved1)
 {
     // speed
     {
@@ -292,11 +300,10 @@ void CPlusPlusCHOPExampleJp::setupParameters(OP_ParameterManager* manager, void*
     }
 }
 
-void CPlusPlusCHOPExampleJp::pulsePressed(const char* name, void* reserved1)
+void LipSyncCHOP::pulsePressed(const char* name, void* reserved1)
 {
     if (!strcmp(name, "Reset"))
     {
         myOffset = 0.0;
     }
 }
-*/

@@ -3,14 +3,14 @@
 #include "CHOP_CPlusPlusBase.h"
 
 using namespace TD;
-/*
+
 //関数の詳細については CHOP_CPlusPlusBase.h を参照
 //何か全角記号をつけるとここでだけエラー吐くので注意...
-class CPlusPlusCHOPExampleJp : public CHOP_CPlusPlusBase
+class LipSyncCHOP : public CHOP_CPlusPlusBase
 {
 public:
-  CPlusPlusCHOPExampleJp(const OP_NodeInfo* info);
-  virtual ~CPlusPlusCHOPExampleJp();
+  LipSyncCHOP(const OP_NodeInfo* info);
+  virtual ~LipSyncCHOP();
 
   virtual void getGeneralInfo(CHOP_GeneralInfo*, const OP_Inputs*, void*) override;
   virtual bool getOutputInfo(CHOP_OutputInfo*, const OP_Inputs*, void*) override;
@@ -37,4 +37,3 @@ private:
 
   double myOffset;
 };
-*/
